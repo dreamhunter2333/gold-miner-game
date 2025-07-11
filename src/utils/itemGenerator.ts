@@ -1,17 +1,14 @@
 import type { GameItem } from '../types/game'
+import { getDifficultyConfig, generateSizeDistribution } from './difficultySystem'
 
 export const generateRandomItems = (canvasWidth: number, canvasHeight: number, level: number): GameItem[] => {
   const items: GameItem[] = []
   const minY = canvasHeight * 0.4
   const maxY = canvasHeight - 100
   
-  const itemCounts = {
-    gold: Math.min(3 + level, 8),
-    stone: Math.min(1 + Math.floor(level / 2), 4),
-    diamond: Math.min(2 + level, 8),
-    bone: Math.floor(level / 3),
-    bag: Math.floor(level / 4)
-  }
+  // 使用新的难度系统
+  const difficultyConfig = getDifficultyConfig(level)
+  const itemCounts = difficultyConfig.itemDistribution
   
   const itemConfigs = {
     gold: {
@@ -56,7 +53,8 @@ export const generateRandomItems = (canvasWidth: number, canvasHeight: number, l
     }
   }
   
-  const sizeDistribution = ['small', 'small', 'small', 'medium', 'medium', 'large']
+  // 根据难度配置生成尺寸分布
+  const sizeDistribution = generateSizeDistribution(difficultyConfig.sizeDistribution)
   
   Object.entries(itemCounts).forEach(([type, count]) => {
     for (let i = 0; i < count; i++) {
@@ -119,6 +117,7 @@ export const getItemMultiplier = (level: number): number => {
   return 1 + (level - 1) * 0.2
 }
 
+// 使用新的难度系统获取关卡要求
 export const getLevelRequirement = (level: number): number => {
-  return level * 1000
+  return getDifficultyConfig(level).targetScore
 }
