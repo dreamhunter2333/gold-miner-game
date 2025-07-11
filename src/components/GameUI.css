@@ -1,0 +1,427 @@
+.game-ui {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+  color: white;
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid #CD853F;
+}
+
+.score-section {
+  display: flex;
+  gap: 20px;
+}
+
+.timer-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.sound-toggle {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sound-toggle:hover {
+  background: rgba(0, 0, 0, 0.5);
+  transform: scale(1.1);
+}
+
+.sound-toggle.disabled {
+  opacity: 0.5;
+}
+
+.score, .level, .timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: bold;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.value {
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.timer .value.warning {
+  color: #FF4444;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.progress-section {
+  padding: 8px 15px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+  width: 100%;
+}
+
+.progress-label {
+  font-size: 12px;
+  margin-bottom: 4px;
+  opacity: 0.9;
+}
+
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.game-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 15px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-start {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+}
+
+.btn-pause {
+  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+  color: white;
+}
+
+.btn-reset, .btn-restart {
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+  color: white;
+}
+
+.btn-resume {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+}
+
+.start-game-overlay, .game-over-overlay, .pause-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.start-game-content, .game-over-content, .pause-content {
+  background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+  padding: 40px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+  border: 3px solid #CD853F;
+  max-width: 85vw;
+  min-width: 350px;
+  max-height: 85vh;
+  overflow: auto;
+}
+
+.start-game-content h2, .game-over-content h2, .pause-content h2 {
+  margin: 0 0 25px 0;
+  font-size: 28px;
+  color: #FFD700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.game-instructions {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.game-instructions p {
+  margin: 8px 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.game-instructions p:first-child {
+  font-weight: bold;
+  font-size: 18px;
+  color: #FFD700;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.game-stats, .pause-stats {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.game-stats p, .pause-stats p {
+  margin: 10px 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.highlight {
+  color: #FFD700;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.btn-start-large, .btn-restart-large, .btn-resume-large {
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  margin-top: 20px;
+}
+
+.btn-start-large {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+}
+
+.btn-restart-large {
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+  color: white;
+}
+
+.btn-resume-large {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+}
+
+.btn-start-large:hover, .btn-restart-large:hover, .btn-resume-large:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.btn-start-large:active, .btn-restart-large:active, .btn-resume-large:active {
+  transform: translateY(0);
+}
+
+
+@media (max-width: 768px) {
+  .game-ui {
+    flex-shrink: 0;
+  }
+  
+  .game-header {
+    flex-direction: row;
+    gap: 12px;
+    padding: 6px 10px;
+    min-height: auto;
+  }
+  
+  .score-section {
+    gap: 15px;
+  }
+  
+  .timer-section {
+    gap: 10px;
+  }
+  
+  .sound-toggle {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .progress-section {
+    padding: 4px 10px;
+  }
+  
+  .game-controls {
+    padding: 6px 10px;
+    gap: 10px;
+  }
+  
+  .btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+  
+  .label {
+    font-size: 11px;
+  }
+  
+  .value {
+    font-size: 16px;
+  }
+  
+  .progress-track {
+    height: 8px;
+  }
+  
+  .start-game-content, .game-over-content, .pause-content {
+    padding: 30px;
+    min-width: 320px;
+    max-width: 90vw;
+  }
+  
+  .start-game-content h2, .game-over-content h2, .pause-content h2 {
+    font-size: 24px;
+  }
+  
+  .game-instructions p {
+    font-size: 14px;
+  }
+  
+  .game-stats p, .pause-stats p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-ui {
+    flex-shrink: 0;
+  }
+  
+  .game-header {
+    padding: 4px 8px;
+    gap: 8px;
+  }
+  
+  .score-section {
+    gap: 12px;
+  }
+  
+  .timer-section {
+    gap: 8px;
+  }
+  
+  .sound-toggle {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+  
+  .progress-section {
+    padding: 4px 8px;
+  }
+  
+  .game-controls {
+    padding: 5px 8px;
+    gap: 8px;
+  }
+  
+  .btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  
+  .label {
+    font-size: 10px;
+  }
+  
+  .value {
+    font-size: 15px;
+  }
+  
+  .progress-track {
+    height: 7px;
+  }
+  
+  .progress-label {
+    font-size: 11px;
+    margin-bottom: 3px;
+  }
+  
+  .start-game-content, .game-over-content, .pause-content {
+    padding: 25px;
+    min-width: 280px;
+    max-width: 95vw;
+  }
+  
+  .start-game-content h2, .game-over-content h2, .pause-content h2 {
+    font-size: 20px;
+  }
+  
+  .game-instructions p {
+    font-size: 13px;
+  }
+  
+  .game-stats p, .pause-stats p {
+    font-size: 14px;
+  }
+  
+  .btn-start-large, .btn-restart-large, .btn-resume-large {
+    padding: 12px 24px;
+    font-size: 16px;
+  }
+}
