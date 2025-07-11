@@ -84,7 +84,7 @@ const GameUI = ({ gameState, onStartGame, onPauseGame, onResetGame }: GameUIProp
         <div className="start-game-overlay">
           <div className="start-game-content">
             <h2>🏆 黄金矿工</h2>
-            <div className="game-instructions">
+            <div className="start-game-rules">
               <p>📋 游戏说明：</p>
               <p>• 点击屏幕发射抓钩</p>
               <p>• 抓取黄金和宝石获得分数</p>

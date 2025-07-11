@@ -46,6 +46,7 @@
   padding: 5px;
   background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
   height: 100vh;
+  height: -webkit-fill-available;
   display: flex;
   flex-direction: column;
   font-family: 'Arial', sans-serif;
@@ -140,18 +141,26 @@ body {
   padding: 0;
   background: linear-gradient(135deg, #1F4037 0%, #99F2C8 100%);
   height: 100vh;
+  height: -webkit-fill-available;
   overflow: hidden;
+  position: fixed;
+  width: 100%;
 }
 
 #root {
   width: 100%;
   height: 100vh;
+  height: -webkit-fill-available;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 @media (max-width: 768px) {
   .game-container {
     padding: 2px;
     height: 100vh;
+    height: -webkit-fill-available;
     max-height: 100vh;
   }
   
@@ -171,6 +180,7 @@ body {
     padding: 0;
     margin: 0;
     height: 100vh;
+    height: -webkit-fill-available;
     overflow: hidden;
   }
 }
@@ -179,6 +189,7 @@ body {
   .game-container {
     padding: 1px;
     height: 100vh;
+    height: -webkit-fill-available;
     max-width: 100%;
     max-height: 100vh;
   }
@@ -198,6 +209,7 @@ body {
   
   html, body {
     height: 100vh;
+    height: -webkit-fill-available;
     overflow: hidden;
     position: fixed;
     width: 100%;
@@ -205,6 +217,7 @@ body {
   
   #root {
     height: 100vh;
+    height: -webkit-fill-available;
     position: fixed;
     width: 100%;
     top: 0;

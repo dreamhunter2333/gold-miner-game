@@ -187,6 +187,7 @@
   min-width: 350px;
   max-height: 85vh;
   overflow: auto;
+  box-sizing: border-box;
 }
 
 .start-game-content h2, .game-over-content h2, .pause-content h2 {
@@ -196,23 +197,25 @@
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.game-instructions {
-  background: rgba(0, 0, 0, 0.2);
+.start-game-rules {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 10px;
   padding: 20px;
-  border-radius: 12px;
   margin: 20px 0;
   text-align: left;
 }
 
-.game-instructions p {
+.start-game-rules p {
   margin: 8px 0;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.5;
+  color: white;
 }
 
-.game-instructions p:first-child {
+.start-game-rules p:first-child {
   font-weight: bold;
-  font-size: 18px;
+  font-size: 16px;
   color: #FFD700;
   text-align: center;
   margin-bottom: 15px;
@@ -334,12 +337,17 @@
     max-width: 90vw;
   }
   
+  .start-game-rules {
+    padding: 15px;
+    margin: 15px 0;
+  }
+  
   .start-game-content h2, .game-over-content h2, .pause-content h2 {
     font-size: 24px;
   }
   
-  .game-instructions p {
-    font-size: 14px;
+  .start-game-rules p {
+    font-size: 13px;
   }
   
   .game-stats p, .pause-stats p {
@@ -408,12 +416,17 @@
     max-width: 95vw;
   }
   
+  .start-game-rules {
+    padding: 15px;
+    margin: 15px 0;
+  }
+  
   .start-game-content h2, .game-over-content h2, .pause-content h2 {
     font-size: 20px;
   }
   
-  .game-instructions p {
-    font-size: 13px;
+  .start-game-rules p {
+    font-size: 12px;
   }
   
   .game-stats p, .pause-stats p {
