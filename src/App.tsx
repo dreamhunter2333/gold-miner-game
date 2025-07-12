@@ -118,6 +118,23 @@ function App() {
     })
   }, [])
 
+  const handleMouseSteal = useCallback(() => {
+    setGameState(prev => {
+      // 计算钻石价值的损失（按钻石平均价值计算）
+      const diamondValue = 600 // 钻石中等价值
+      const stolenAmount = Math.min(diamondValue, prev.score) // 不能偷超过当前分数
+      
+      // 显示老鼠偷钻石的提示
+      setToastMessage(`🐭 老鼠偷走了 ${stolenAmount} 分钻石！`)
+      setTimeout(() => setToastMessage(''), 3000)
+      
+      return {
+        ...prev,
+        score: Math.max(0, prev.score - stolenAmount) // 分数不能为负
+      }
+    })
+  }, [])
+
   return (
     <div className="game-container">
       <GameUI 
@@ -130,6 +147,7 @@ function App() {
         gameState={gameState}
         onUpdateScore={updateScore}
         onNextLevel={nextLevel}
+        onMouseSteal={handleMouseSteal}
       />
       
       {toastMessage && (

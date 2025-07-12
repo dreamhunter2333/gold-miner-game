@@ -7,7 +7,7 @@ import { MinerRenderer, HookRenderer, ItemRenderer, BackgroundRenderer } from '.
 import { useGameState, useGameLogic } from '../hooks'
 import './GameCanvas.css'
 
-const GameCanvas = ({ gameState, onUpdateScore, onNextLevel }: GameProps) => {
+const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: GameProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animationRef = useRef<number | undefined>(undefined)
   
@@ -118,16 +118,33 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel }: GameProps) => {
       hook.length -= hook.speed
       if (hook.length <= 0) {
         if (hook.attachedItem) {
-          onUpdateScore(hook.attachedItem.value)
-          
           const item = hook.attachedItem
-          particleSystem.addParticles(
-            miner.x + miner.width / 2,
-            miner.y + miner.height,
-            8,
-            'collect',
-            item.color
-          )
+          
+          // 处理老鼠的特殊逻辑
+          if (item.type === 'mouse') {
+            onMouseSteal() // 触发老鼠偷钻石逻辑
+            
+            // 老鼠特殊音效和粒子效果
+            audioManager.play('hit') // 可以后续添加专门的老鼠音效
+            particleSystem.addParticles(
+              miner.x + miner.width / 2,
+              miner.y + miner.height,
+              12,
+              'sparkle',
+              '#FF0000' // 红色粒子表示损失
+            )
+          } else {
+            // 正常物品的分数处理
+            onUpdateScore(item.value)
+            
+            particleSystem.addParticles(
+              miner.x + miner.width / 2,
+              miner.y + miner.height,
+              8,
+              'collect',
+              item.color
+            )
+          }
           
           itemsRef.current = itemsRef.current.filter(item => item.id !== hook.attachedItem!.id)
           
@@ -152,7 +169,7 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel }: GameProps) => {
       hook.attachedItem.x = hookX - hook.attachedItem.width / 2
       hook.attachedItem.y = hookY - hook.attachedItem.height / 2
     }
-  }, [gameState.isGameRunning, gameState.isPaused, onUpdateScore, onNextLevel, updateHookPhysics, checkCollision, calculateHookSpeed, resetHook])
+  }, [gameState.isGameRunning, gameState.isPaused, onUpdateScore, onNextLevel, onMouseSteal, updateHookPhysics, checkCollision, calculateHookSpeed, resetHook])
 
   const render = useCallback(() => {
     const canvas = canvasRef.current

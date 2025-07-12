@@ -19,7 +19,7 @@ export interface GameItem {
   y: number
   width: number
   height: number
-  type: 'gold' | 'stone' | 'diamond' | 'bone' | 'bag'
+  type: 'gold' | 'stone' | 'diamond' | 'bone' | 'bag' | 'tnt' | 'mouse'
   value: number
   weight: number
   color: string
@@ -52,6 +52,7 @@ export interface GameProps {
   gameState: GameState
   onUpdateScore: (points: number) => void
   onNextLevel: () => void
+  onMouseSteal: () => void // 老鼠偷钻石的回调
 }
 
 export interface GameUIProps {

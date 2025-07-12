@@ -23,6 +23,12 @@ export class ItemRenderer {
       case 'bag':
         this.drawBag(ctx, centerX, centerY, item)
         break
+      case 'tnt':
+        this.drawTNT(ctx, centerX, centerY, item)
+        break
+      case 'mouse':
+        this.drawMouse(ctx, centerX, centerY, item)
+        break
       default:
         this.drawDefault(ctx, item)
         break
@@ -475,6 +481,135 @@ export class ItemRenderer {
     ctx.strokeStyle = '#000000'
     ctx.lineWidth = 1
     ctx.strokeRect(item.x, item.y, item.width, item.height)
+  }
+
+  /**
+   * 绘制TNT炸药 - 拟物风格
+   */
+  private static drawTNT(ctx: CanvasRenderingContext2D, centerX: number, centerY: number, item: GameItem) {
+    const width = item.width
+    const height = item.height
+    
+    // TNT主体 - 圆柱形
+    const bodyGradient = ctx.createLinearGradient(centerX - width/2, centerY - height/2, centerX + width/2, centerY + height/2)
+    bodyGradient.addColorStop(0, '#FF4500')
+    bodyGradient.addColorStop(0.3, '#DC143C')
+    bodyGradient.addColorStop(0.7, '#B22222')
+    bodyGradient.addColorStop(1, '#8B0000')
+    
+    ctx.fillStyle = bodyGradient
+    ctx.fillRect(centerX - width/2, centerY - height/3, width, height * 0.6)
+    
+    // TNT标签
+    ctx.fillStyle = '#FFFFFF'
+    ctx.fillRect(centerX - width/3, centerY - height/6, width * 0.66, height * 0.33)
+    
+    // TNT文字
+    ctx.fillStyle = '#000000'
+    ctx.font = `bold ${Math.max(8, width * 0.25)}px Arial`
+    ctx.textAlign = 'center'
+    ctx.fillText('TNT', centerX, centerY + 2)
+    
+    // 引线
+    ctx.strokeStyle = '#8B4513'
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.moveTo(centerX, centerY - height/2)
+    ctx.lineTo(centerX - width * 0.2, centerY - height * 0.7)
+    ctx.stroke()
+    
+    // 火花效果
+    const sparkCount = 3
+    for (let i = 0; i < sparkCount; i++) {
+      const angle = (i / sparkCount) * Math.PI * 2
+      const sparkX = centerX - width * 0.2 + Math.cos(angle) * 3
+      const sparkY = centerY - height * 0.7 + Math.sin(angle) * 3
+      
+      ctx.fillStyle = '#FFD700'
+      ctx.beginPath()
+      ctx.arc(sparkX, sparkY, 1, 0, Math.PI * 2)
+      ctx.fill()
+    }
+    
+    // 边框
+    ctx.strokeStyle = '#8B0000'
+    ctx.lineWidth = 1
+    ctx.strokeRect(centerX - width/2, centerY - height/3, width, height * 0.6)
+  }
+
+  /**
+   * 绘制老鼠 - 拟物风格
+   */
+  private static drawMouse(ctx: CanvasRenderingContext2D, centerX: number, centerY: number, item: GameItem) {
+    const width = item.width
+    const height = item.height
+    
+    // 老鼠身体
+    const bodyGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, width/2)
+    bodyGradient.addColorStop(0, '#A0A0A0')
+    bodyGradient.addColorStop(0.6, '#808080')
+    bodyGradient.addColorStop(1, '#696969')
+    
+    ctx.fillStyle = bodyGradient
+    ctx.beginPath()
+    ctx.ellipse(centerX, centerY, width * 0.4, height * 0.35, 0, 0, Math.PI * 2)
+    ctx.fill()
+    
+    // 老鼠头部
+    ctx.fillStyle = '#A0A0A0'
+    ctx.beginPath()
+    ctx.ellipse(centerX + width * 0.3, centerY - height * 0.1, width * 0.2, height * 0.25, 0, 0, Math.PI * 2)
+    ctx.fill()
+    
+    // 耳朵
+    ctx.fillStyle = '#696969'
+    ctx.beginPath()
+    ctx.ellipse(centerX + width * 0.35, centerY - height * 0.3, width * 0.08, height * 0.12, 0, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(centerX + width * 0.25, centerY - height * 0.25, width * 0.08, height * 0.12, 0, 0, Math.PI * 2)
+    ctx.fill()
+    
+    // 眼睛
+    ctx.fillStyle = '#000000'
+    ctx.beginPath()
+    ctx.arc(centerX + width * 0.38, centerY - height * 0.05, width * 0.03, 0, Math.PI * 2)
+    ctx.fill()
+    
+    // 鼻子
+    ctx.fillStyle = '#FF69B4'
+    ctx.beginPath()
+    ctx.arc(centerX + width * 0.45, centerY, width * 0.02, 0, Math.PI * 2)
+    ctx.fill()
+    
+    // 尾巴
+    ctx.strokeStyle = '#696969'
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.moveTo(centerX - width * 0.4, centerY)
+    ctx.quadraticCurveTo(centerX - width * 0.6, centerY - height * 0.2, centerX - width * 0.5, centerY - height * 0.4)
+    ctx.stroke()
+    
+    // 脚
+    ctx.fillStyle = '#696969'
+    for (let i = 0; i < 4; i++) {
+      const footX = centerX - width * 0.2 + (i * width * 0.15)
+      const footY = centerY + height * 0.3
+      ctx.beginPath()
+      ctx.ellipse(footX, footY, width * 0.03, height * 0.05, 0, 0, Math.PI * 2)
+      ctx.fill()
+    }
+    
+    // 胡须
+    ctx.strokeStyle = '#000000'
+    ctx.lineWidth = 1
+    for (let i = 0; i < 3; i++) {
+      const whiskerY = centerY - height * 0.05 + (i * height * 0.05)
+      ctx.beginPath()
+      ctx.moveTo(centerX + width * 0.45, whiskerY)
+      ctx.lineTo(centerX + width * 0.55, whiskerY)
+      ctx.stroke()
+    }
   }
 
   private static drawScoreLabel(ctx: CanvasRenderingContext2D, centerX: number, item: GameItem) {

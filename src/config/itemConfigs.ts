@@ -20,9 +20,9 @@ export interface ItemTypeConfig {
 export const ITEM_CONFIGS: Record<GameItem['type'], ItemTypeConfig> = {
   gold: {
     sizes: {
-      small: { width: 25, height: 20, value: 100, weight: 3 },
-      medium: { width: 40, height: 30, value: 200, weight: 5 },
-      large: { width: 60, height: 45, value: 350, weight: 8 }
+      small: { width: 25, height: 20, value: 100, weight: 2 }, // 从3减少到2
+      medium: { width: 40, height: 30, value: 200, weight: 3 }, // 从5减少到3
+      large: { width: 60, height: 45, value: 350, weight: 5 }   // 从8减少到5
     },
     rarity: 0.3,
     colors: {
@@ -48,9 +48,9 @@ export const ITEM_CONFIGS: Record<GameItem['type'], ItemTypeConfig> = {
   
   stone: {
     sizes: {
-      small: { width: 25, height: 25, value: 20, weight: 6 },
-      medium: { width: 40, height: 40, value: 35, weight: 10 },
-      large: { width: 60, height: 60, value: 50, weight: 15 }
+      small: { width: 25, height: 25, value: 20, weight: 3 },  // 从4减少到3
+      medium: { width: 40, height: 40, value: 35, weight: 5 }, // 从7减少到5
+      large: { width: 60, height: 60, value: 50, weight: 7 }   // 从10减少到7
     },
     rarity: 0.4,
     colors: {
@@ -76,15 +76,43 @@ export const ITEM_CONFIGS: Record<GameItem['type'], ItemTypeConfig> = {
 
   bag: {
     sizes: {
-      small: { width: 25, height: 25, value: 50, weight: 4 },
-      medium: { width: 35, height: 35, value: 75, weight: 6 },
-      large: { width: 50, height: 50, value: 100, weight: 8 }
+      small: { width: 25, height: 25, value: 50, weight: 1 },  // 从2减少到1
+      medium: { width: 35, height: 35, value: 75, weight: 2 }, // 从4减少到2
+      large: { width: 50, height: 50, value: 100, weight: 3 }  // 从6减少到3
     },
     rarity: 0.2,
     colors: {
       primary: '#8B4513',
       secondary: '#A0522D',
       accent: '#654321'
+    }
+  },
+
+  tnt: {
+    sizes: {
+      small: { width: 20, height: 25, value: -100, weight: 5 },
+      medium: { width: 30, height: 35, value: -200, weight: 7 },
+      large: { width: 40, height: 50, value: -350, weight: 10 }
+    },
+    rarity: 0.1, // 相对稀有，只在高难度出现
+    colors: {
+      primary: '#DC143C', // 深红色
+      secondary: '#B22222', // 火砖色
+      accent: '#8B0000'    // 暗红色
+    }
+  },
+
+  mouse: {
+    sizes: {
+      small: { width: 25, height: 15, value: 0, weight: 1 }, // 价值0，因为会偷钻石
+      medium: { width: 35, height: 20, value: 0, weight: 2 },
+      large: { width: 45, height: 25, value: 0, weight: 3 }
+    },
+    rarity: 0.08, // 非常稀有
+    colors: {
+      primary: '#696969',  // 灰色
+      secondary: '#A0A0A0', // 浅灰色
+      accent: '#2F4F4F'    // 深灰色
     }
   }
 }
@@ -129,6 +157,12 @@ export const calculateSpawnProbability = (
     case 'bag':
       // Bags become slightly more common at higher levels
       return Math.min(baseRarity + (level - 1) * 0.01, 0.3)
+    case 'tnt':
+      // TNT只在3级以上出现，难度越高越多
+      return level >= 3 ? Math.min((level - 2) * 0.03, 0.15) : 0
+    case 'mouse':
+      // 老鼠只在5级以上出现，非常稀有
+      return level >= 5 ? Math.min((level - 4) * 0.02, 0.1) : 0
     default:
       return baseRarity
   }
@@ -138,10 +172,10 @@ export const calculateSpawnProbability = (
  * Generate weighted item pool for a given level
  */
 export const generateItemPool = (level: number): Array<{ type: GameItem['type']; weight: number }> => {
-  const itemTypes: GameItem['type'][] = ['gold', 'diamond', 'stone', 'bone', 'bag']
+  const itemTypes: GameItem['type'][] = ['gold', 'diamond', 'stone', 'bone', 'bag', 'tnt', 'mouse']
   
   return itemTypes.map(type => ({
     type,
     weight: calculateSpawnProbability(type, level) * 100
-  }))
+  })).filter(item => item.weight > 0) // 过滤掉权重为0的物品
 }
