@@ -91,6 +91,7 @@ function App() {
       isGameOver: false,
       isPaused: false
     })
+    setToastMessage('')
   }, [])
 
   const updateScore = useCallback((points: number) => {

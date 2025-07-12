@@ -211,6 +211,27 @@ const GameCanvas = ({ gameState, onUpdateScore }: GameProps) => {
     return () => window.removeEventListener('resize', handleResize)
   }, [setupCanvas])
 
+  // 重新生成物品当游戏开始或重置时
+  useEffect(() => {
+    if (gameState.isGameRunning && !gameState.isPaused) {
+      const canvas = canvasRef.current
+      if (canvas) {
+        const rect = canvas.getBoundingClientRect()
+        const newItems = generateRandomItems(rect.width, rect.height, gameState.level)
+        itemsRef.current = newItems
+        resetHook() // 重置钩子状态
+      }
+    }
+  }, [gameState.isGameRunning, gameState.level, resetHook])
+
+  // 清空物品当游戏结束时
+  useEffect(() => {
+    if (gameState.isGameOver || (!gameState.isGameRunning && !gameState.isGameOver)) {
+      itemsRef.current = []
+      resetHook()
+    }
+  }, [gameState.isGameOver, gameState.isGameRunning, resetHook])
+
   useEffect(() => {
     if (gameState.isGameRunning && !gameState.isPaused) {
       render()
@@ -222,34 +243,6 @@ const GameCanvas = ({ gameState, onUpdateScore }: GameProps) => {
       }
     }
   }, [gameState.isGameRunning, gameState.isPaused, render])
-
-  useEffect(() => {
-    if (gameState.isGameRunning && !gameState.isPaused) {
-      const canvas = canvasRef.current
-      if (canvas) {
-        const rect = canvas.getBoundingClientRect()
-        itemsRef.current = generateRandomItems(rect.width, rect.height, gameState.level)
-        
-        // 通关时播放音效和粒子效果
-        if (gameState.score > 0 && gameState.score % 1000 === 0) {
-          audioManager.play('levelUp')
-          
-          // 添加庆祝粒子效果
-          const canvas = canvasRef.current
-          if (canvas) {
-            const rect = canvas.getBoundingClientRect()
-            particleSystem.addParticles(
-              rect.width / 2,
-              rect.height / 2,
-              20,
-              'explosion',
-              '#FFD700'
-            )
-          }
-        }
-      }
-    }
-  }, [gameState.level])
 
   return (
     <div className="game-canvas-container">
