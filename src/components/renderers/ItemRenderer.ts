@@ -466,7 +466,7 @@ export class ItemRenderer {
     const centerX = item.x + item.width / 2
     const centerY = item.y + item.height / 2
     
-    let gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.max(item.width, item.height) / 2)
+    const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.max(item.width, item.height) / 2)
     gradient.addColorStop(0, item.color)
     gradient.addColorStop(1, item.color)
     ctx.fillStyle = gradient

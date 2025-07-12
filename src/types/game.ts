@@ -51,6 +51,7 @@ export interface Hook {
 export interface GameProps {
   gameState: GameState
   onUpdateScore: (points: number) => void
+  onNextLevel: () => void
 }
 
 export interface GameUIProps {

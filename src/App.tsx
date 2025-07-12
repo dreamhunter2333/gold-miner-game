@@ -101,6 +101,23 @@ function App() {
     }))
   }, [])
 
+  const nextLevel = useCallback(() => {
+    setGameState(prev => {
+      const newLevel = prev.level + 1
+      const newDifficultyConfig = getDifficultyConfig(newLevel)
+      
+      setToastMessage(`🎉 恭喜进入第 ${newLevel} 关！`)
+      setTimeout(() => setToastMessage(''), 3000)
+      
+      return {
+        ...prev,
+        level: newLevel,
+        targetScore: newDifficultyConfig.targetScore,
+        timeRemaining: newDifficultyConfig.timeLimit
+      }
+    })
+  }, [])
+
   return (
     <div className="game-container">
       <GameUI 
@@ -112,6 +129,7 @@ function App() {
       <GameCanvas 
         gameState={gameState}
         onUpdateScore={updateScore}
+        onNextLevel={nextLevel}
       />
       
       {toastMessage && (

@@ -23,11 +23,11 @@ export const useGameLogic = () => {
 
   const calculateHookSpeed = useCallback((item: GameItem): number => {
     const baseSpeed = 8
-    const weightFactor = item.weight * 0.5 // 重量影响因子
-    const sizeFactor = (item.width + item.height) / 80 // 尺寸影响因子
+    const weightFactor = item.weight * 0.8 // 增加重量影响因子
+    const sizeFactor = (item.width + item.height) / 60 // 增加尺寸影响因子
     
-    // 计算最终速度，最小速度为1，最大为基础速度
-    return Math.max(1, baseSpeed - weightFactor - sizeFactor)
+    // 计算最终速度，最小速度为0.5，最大为基础速度
+    return Math.max(0.5, baseSpeed - weightFactor - sizeFactor)
   }, [])
 
   return {

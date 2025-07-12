@@ -7,7 +7,7 @@ import { MinerRenderer, HookRenderer, ItemRenderer, BackgroundRenderer } from '.
 import { useGameState, useGameLogic } from '../hooks'
 import './GameCanvas.css'
 
-const GameCanvas = ({ gameState, onUpdateScore }: GameProps) => {
+const GameCanvas = ({ gameState, onUpdateScore, onNextLevel }: GameProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animationRef = useRef<number | undefined>(undefined)
   
@@ -120,6 +120,14 @@ const GameCanvas = ({ gameState, onUpdateScore }: GameProps) => {
           )
           
           itemsRef.current = itemsRef.current.filter(item => item.id !== hook.attachedItem!.id)
+          
+          // 检查是否所有物品都被收集完毕
+          if (itemsRef.current.length === 0) {
+            // 延迟一下再进入下一关，让玩家看到收集效果
+            setTimeout(() => {
+              onNextLevel()
+            }, 1000)
+          }
         }
         resetHook()
       }
@@ -134,7 +142,7 @@ const GameCanvas = ({ gameState, onUpdateScore }: GameProps) => {
       hook.attachedItem.x = hookX - hook.attachedItem.width / 2
       hook.attachedItem.y = hookY - hook.attachedItem.height / 2
     }
-  }, [gameState.isGameRunning, gameState.isPaused, onUpdateScore, updateHookPhysics, checkCollision, calculateHookSpeed, resetHook])
+  }, [gameState.isGameRunning, gameState.isPaused, onUpdateScore, onNextLevel, updateHookPhysics, checkCollision, calculateHookSpeed, resetHook])
 
   const render = useCallback(() => {
     const canvas = canvasRef.current
