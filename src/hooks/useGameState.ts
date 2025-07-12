@@ -19,12 +19,13 @@ export const useGameState = () => {
   })
   const itemsRef = useRef<GameItem[]>([])
 
-  const initializePositions = useCallback((canvasWidth: number, canvasHeight: number) => {
+  const initializePositions = useCallback((canvasWidth: number, _canvasHeight: number) => {
     minerRef.current.x = canvasWidth / 2 - minerRef.current.width / 2
     minerRef.current.y = 50
     hookRef.current.x = minerRef.current.x + minerRef.current.width / 2
     hookRef.current.y = minerRef.current.y + minerRef.current.height
-    hookRef.current.maxLength = Math.max(canvasHeight - 100, 400)
+    // 移除最大长度限制，让绳子可以延伸到边界
+    hookRef.current.maxLength = Infinity
   }, [])
 
   const resetHook = useCallback(() => {

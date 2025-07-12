@@ -56,16 +56,26 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel }: GameProps) => {
 
     const hook = hookRef.current
     const miner = minerRef.current
+    const rect = canvas.getBoundingClientRect()
     
-    updateHookPhysics(hook)
+    updateHookPhysics(hook, rect.width, rect.height, miner.x, miner.width, miner.y, miner.height)
     
     if (hook.isExtending) {
       hook.length += hook.speed
-      if (hook.length >= hook.maxLength) {
+      
+      // 计算钩子的实际位置
+      const startX = miner.x + miner.width / 2
+      const startY = miner.y + miner.height
+      const hookX = startX + Math.sin(hook.angle) * hook.length
+      const hookY = startY + Math.cos(hook.angle) * hook.length
+      
+      // 检查是否碰到边界
+      if (hookX <= 10 || hookX >= rect.width - 10 || hookY >= rect.height - 10) {
         hook.isExtending = false
         hook.isRetracting = true
       }
       
+      // 检查物品碰撞
       itemsRef.current.forEach(item => {
         if (checkCollision(hook, item) && !hook.attachedItem) {
           hook.attachedItem = item
