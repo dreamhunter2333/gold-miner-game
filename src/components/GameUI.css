@@ -5,15 +5,17 @@
   color: white;
   font-family: 'Arial', sans-serif;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0; /* Prevent UI from shrinking */
 }
 
 .game-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 15px;
+  padding: 4px 8px;
   background: rgba(0, 0, 0, 0.2);
-  border-bottom: 2px solid #CD853F;
+  border-bottom: 1px solid #CD853F;
+  min-height: 36px;
 }
 
 .score-section {
@@ -83,7 +85,7 @@
 }
 
 .progress-section {
-  padding: 8px 15px;
+  padding: 4px 8px;
   background: rgba(0, 0, 0, 0.1);
 }
 
@@ -116,8 +118,8 @@
 .game-controls {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  padding: 8px 15px;
+  gap: 8px;
+  padding: 4px 8px;
   background: rgba(0, 0, 0, 0.1);
 }
 

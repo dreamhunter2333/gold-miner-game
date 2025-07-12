@@ -6,7 +6,7 @@
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#8B4513" />
-    <meta name="background-color" content="#1F4037" />
+    <meta name="background-color" content="#8B4513" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="黄金矿工" />
@@ -19,26 +19,33 @@
     <title>黄金矿工 - Gold Miner</title>
     
     <style>
+      html {
+        background-color: #8B4513 !important;
+      }
+      
       /* Prevent pull-to-refresh and overscroll */
       html, body {
         overscroll-behavior: none;
         touch-action: manipulation;
-        background-color: #1F4037;
+        background-color: #8B4513 !important;
         height: 100vh;
-        height: -webkit-fill-available;
+        height: 100dvh;
         position: fixed;
         width: 100%;
+        margin: 0;
+        padding: 0;
       }
       
       /* Loading screen styling */
       body {
         margin: 0;
         padding: 0;
-        background: linear-gradient(135deg, #1F4037 0%, #99f2c8 100%);
+        background: #8B4513 !important;
       }
       
       /* Hide iOS Safari UI and handle safe areas */
-      @media (display-mode: standalone) {
+      @supports (-webkit-touch-callout: none) {
+        /* iOS Safari specific styles */
         body {
           -webkit-user-select: none;
           -webkit-touch-callout: none;
@@ -48,15 +55,41 @@
         /* Handle iPhone notch and safe areas */
         #root {
           padding-top: env(safe-area-inset-top);
-          padding-bottom: env(safe-area-inset-bottom);
+          padding-bottom: max(env(safe-area-inset-bottom), 20px);
           padding-left: env(safe-area-inset-left);
           padding-right: env(safe-area-inset-right);
           height: 100vh;
-          height: -webkit-fill-available;
+          height: 100dvh;
           width: 100%;
           position: fixed;
           top: 0;
           left: 0;
+          box-sizing: border-box;
+        }
+        
+        /* iOS Safari bottom area fix */
+        html {
+          background: #8B4513 !important;
+          min-height: 100vh;
+          min-height: 100dvh;
+        }
+        
+        body {
+          background: #8B4513 !important;
+          min-height: 100vh;
+          min-height: 100dvh;
+        }
+        
+        #root {
+          background: #8B4513 !important;
+          min-height: 100vh;
+          min-height: 100dvh;
+        }
+        
+        .game-container {
+          padding-bottom: 0 !important;
+          background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%) !important;
+          height: 100dvh !important;
         }
       }
     </style>

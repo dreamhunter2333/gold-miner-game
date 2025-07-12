@@ -30,7 +30,7 @@ export default defineConfig({
         short_name: '黄金矿工',
         description: '经典黄金矿工游戏，精致画面，传统玩法',
         theme_color: '#8B4513',
-        background_color: '#1F4037',
+        background_color: '#8B4513',
         display: 'standalone',
         orientation: 'portrait',
         scope: '/',

@@ -4,10 +4,11 @@
   flex: 1;
   display: flex;
   background: linear-gradient(180deg, #87CEEB 0%, #DEB887 30%, #8B4513 100%);
-  border: 3px solid #654321;
-  border-radius: 8px;
+  border: 1px solid #654321;
+  border-radius: 2px;
   overflow: hidden;
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+  min-height: 0;
 }
 
 .game-canvas {

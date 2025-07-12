@@ -43,10 +43,10 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 5px;
+  padding: 0;
   background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
   height: 100vh;
-  height: -webkit-fill-available;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   font-family: 'Arial', sans-serif;
@@ -139,9 +139,9 @@
 body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #1F4037 0%, #99F2C8 100%);
+  background: #8B4513 !important;
   height: 100vh;
-  height: -webkit-fill-available;
+  height: 100dvh;
   overflow: hidden;
   position: fixed;
   width: 100%;
@@ -150,7 +150,7 @@ body {
 #root {
   width: 100%;
   height: 100vh;
-  height: -webkit-fill-available;
+  height: 100dvh;
   position: fixed;
   top: 0;
   left: 0;
@@ -158,10 +158,11 @@ body {
 
 @media (max-width: 768px) {
   .game-container {
-    padding: 2px;
+    padding: 0;
     height: 100vh;
-    height: -webkit-fill-available;
+    height: 100dvh;
     max-height: 100vh;
+    max-height: 100dvh;
   }
   
   .level-complete-content {
@@ -187,11 +188,12 @@ body {
 
 @media (max-width: 480px) {
   .game-container {
-    padding: 1px;
+    padding: 0;
     height: 100vh;
-    height: -webkit-fill-available;
+    height: 100dvh;
     max-width: 100%;
     max-height: 100vh;
+    max-height: 100dvh;
   }
   
   .level-complete-content {
@@ -209,7 +211,7 @@ body {
   
   html, body {
     height: 100vh;
-    height: -webkit-fill-available;
+    height: 100dvh;
     overflow: hidden;
     position: fixed;
     width: 100%;
@@ -217,10 +219,54 @@ body {
   
   #root {
     height: 100vh;
-    height: -webkit-fill-available;
+    height: 100dvh;
     position: fixed;
     width: 100%;
     top: 0;
     left: 0;
+  }
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari detected - force brown background everywhere */
+  html {
+    background: #8B4513 !important;
+  }
+  
+  body {
+    background: #8B4513 !important;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  
+  #root {
+    background: #8B4513 !important;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  
+  .game-container {
+    padding-bottom: 0 !important;
+    height: 100dvh !important;
+    background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%) !important;
+  }
+  
+  .game-canvas-container {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-container {
+    padding-bottom: 0 !important;
+    height: 100dvh !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-container {
+    padding-bottom: 0 !important;
+    height: 100dvh !important;
   }
 }
