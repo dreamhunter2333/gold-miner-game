@@ -57,7 +57,7 @@ export interface GameProps {
 
 export interface GameUIProps {
   gameState: GameState
-  onStartGame: () => void
+  onStartGame: (isHardMode?: boolean) => void
   onPauseGame: () => void
   onResetGame: () => void
 }

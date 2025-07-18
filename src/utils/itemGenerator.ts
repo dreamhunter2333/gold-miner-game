@@ -18,7 +18,7 @@ export const generateRandomItems = (canvasWidth: number, canvasHeight: number, l
                         difficultyConfig.itemDistribution.bone + 
                         difficultyConfig.itemDistribution.bag +
                         Math.floor(level >= 3 ? (level - 2) * 2 : 0) + // TNT数量
-                        Math.floor(level >= 5 ? (level - 4) * 1 : 0)   // 老鼠数量
+                        Math.floor(level >= 5 ? Math.min(level - 4, 5) : 0)   // 老鼠数量，最多5只
   
   const sizeDistribution = generateSizeDistribution(difficultyConfig.sizeDistribution)
   

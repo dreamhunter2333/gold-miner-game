@@ -257,7 +257,9 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-.btn-start-large, .btn-restart-large, .btn-resume-large {
+
+.btn-start-large, .btn-hard-large {
+  display: block;
   padding: 15px 30px;
   font-size: 18px;
   font-weight: bold;
@@ -268,11 +270,22 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  margin-top: 20px;
+  min-width: 200px;
+  max-width: 200px;
+  width: 200px;
+  height: 50px;
+  line-height: 20px;
+  text-align: center;
+  margin: 0;
 }
 
 .btn-start-large {
   background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+}
+
+.btn-hard-large {
+  background: linear-gradient(135deg, #FF4444 0%, #CC0000 100%);
   color: white;
 }
 
@@ -286,12 +299,20 @@
   color: white;
 }
 
-.btn-start-large:hover, .btn-restart-large:hover, .btn-resume-large:hover {
+.start-game-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.btn-start-large:hover, .btn-hard-large:hover, .btn-restart-large:hover, .btn-resume-large:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
-.btn-start-large:active, .btn-restart-large:active, .btn-resume-large:active {
+.btn-start-large:active, .btn-hard-large:active, .btn-restart-large:active, .btn-resume-large:active {
   transform: translateY(0);
 }
 

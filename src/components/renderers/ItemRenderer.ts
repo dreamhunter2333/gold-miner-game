@@ -1,4 +1,5 @@
 import type { GameItem } from '../../types/game'
+import type { Rat } from '../../utils/ratSystem'
 
 export class ItemRenderer {
   static draw(ctx: CanvasRenderingContext2D, item: GameItem) {
@@ -538,17 +539,33 @@ export class ItemRenderer {
   }
 
   /**
-   * 绘制老鼠 - 拟物风格
+   * 绘制老鼠 - 拟物风格，带有偷钻石动画效果
    */
   private static drawMouse(ctx: CanvasRenderingContext2D, centerX: number, centerY: number, item: GameItem) {
     const width = item.width
     const height = item.height
     
-    // 老鼠身体
+    // 检查是否是正在偷钻石的老鼠
+    const ratItem = item as Rat
+    const isStealing = ratItem.isStealing || false
+    const stealProgress = ratItem.stealProgress || 0
+    
+    // 老鼠身体 - 根据偷钻石状态调整颜色
+    let bodyColor1 = '#A0A0A0'
+    let bodyColor2 = '#808080'
+    let bodyColor3 = '#696969'
+    
+    if (isStealing) {
+      // 偷钻石时身体发红
+      bodyColor1 = '#FFB0B0'
+      bodyColor2 = '#FF8080'
+      bodyColor3 = '#FF5050'
+    }
+    
     const bodyGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, width/2)
-    bodyGradient.addColorStop(0, '#A0A0A0')
-    bodyGradient.addColorStop(0.6, '#808080')
-    bodyGradient.addColorStop(1, '#696969')
+    bodyGradient.addColorStop(0, bodyColor1)
+    bodyGradient.addColorStop(0.6, bodyColor2)
+    bodyGradient.addColorStop(1, bodyColor3)
     
     ctx.fillStyle = bodyGradient
     ctx.beginPath()
@@ -556,13 +573,13 @@ export class ItemRenderer {
     ctx.fill()
     
     // 老鼠头部
-    ctx.fillStyle = '#A0A0A0'
+    ctx.fillStyle = bodyColor1
     ctx.beginPath()
     ctx.ellipse(centerX + width * 0.3, centerY - height * 0.1, width * 0.2, height * 0.25, 0, 0, Math.PI * 2)
     ctx.fill()
     
     // 耳朵
-    ctx.fillStyle = '#696969'
+    ctx.fillStyle = bodyColor3
     ctx.beginPath()
     ctx.ellipse(centerX + width * 0.35, centerY - height * 0.3, width * 0.08, height * 0.12, 0, 0, Math.PI * 2)
     ctx.fill()
@@ -570,8 +587,8 @@ export class ItemRenderer {
     ctx.ellipse(centerX + width * 0.25, centerY - height * 0.25, width * 0.08, height * 0.12, 0, 0, Math.PI * 2)
     ctx.fill()
     
-    // 眼睛
-    ctx.fillStyle = '#000000'
+    // 眼睛 - 偷钻石时眼睛变红
+    ctx.fillStyle = isStealing ? '#FF0000' : '#000000'
     ctx.beginPath()
     ctx.arc(centerX + width * 0.38, centerY - height * 0.05, width * 0.03, 0, Math.PI * 2)
     ctx.fill()
@@ -582,16 +599,22 @@ export class ItemRenderer {
     ctx.arc(centerX + width * 0.45, centerY, width * 0.02, 0, Math.PI * 2)
     ctx.fill()
     
-    // 尾巴
-    ctx.strokeStyle = '#696969'
+    // 尾巴 - 偷钻石时尾巴摇摆
+    const tailOffset = isStealing ? Math.sin(Date.now() * 0.01) * 5 : 0
+    ctx.strokeStyle = bodyColor3
     ctx.lineWidth = 2
     ctx.beginPath()
     ctx.moveTo(centerX - width * 0.4, centerY)
-    ctx.quadraticCurveTo(centerX - width * 0.6, centerY - height * 0.2, centerX - width * 0.5, centerY - height * 0.4)
+    ctx.quadraticCurveTo(
+      centerX - width * 0.6 + tailOffset, 
+      centerY - height * 0.2, 
+      centerX - width * 0.5 + tailOffset, 
+      centerY - height * 0.4
+    )
     ctx.stroke()
     
     // 脚
-    ctx.fillStyle = '#696969'
+    ctx.fillStyle = bodyColor3
     for (let i = 0; i < 4; i++) {
       const footX = centerX - width * 0.2 + (i * width * 0.15)
       const footY = centerY + height * 0.3
@@ -609,6 +632,22 @@ export class ItemRenderer {
       ctx.moveTo(centerX + width * 0.45, whiskerY)
       ctx.lineTo(centerX + width * 0.55, whiskerY)
       ctx.stroke()
+    }
+    
+    // 偷钻石进度条
+    if (isStealing) {
+      const progressWidth = width * 0.8
+      const progressHeight = 4
+      const progressX = centerX - progressWidth / 2
+      const progressY = centerY - height * 0.6
+      
+      // 背景
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'
+      ctx.fillRect(progressX, progressY, progressWidth, progressHeight)
+      
+      // 进度
+      ctx.fillStyle = '#FF0000'
+      ctx.fillRect(progressX, progressY, progressWidth * stealProgress, progressHeight)
     }
   }
 

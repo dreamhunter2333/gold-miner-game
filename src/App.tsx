@@ -60,15 +60,16 @@ function App() {
 
   useGameTimer({ gameState, onTimeUpdate: handleTimeUpdate, onTimeEnd: handleTimeEnd })
 
-  const startGame = useCallback(() => {
-    const initialDifficultyConfig = getDifficultyConfig(1)
+  const startGame = useCallback((isHardMode = false) => {
+    const startLevel = isHardMode ? 5 : 1
+    const initialDifficultyConfig = getDifficultyConfig(startLevel)
     setGameState(prev => ({
       ...prev,
       isGameRunning: true,
       isGameOver: false,
       timeRemaining: initialDifficultyConfig.timeLimit,
       score: 0,
-      level: 1,
+      level: startLevel,
       targetScore: initialDifficultyConfig.targetScore
     }))
   }, [])

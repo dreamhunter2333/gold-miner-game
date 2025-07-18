@@ -29,12 +29,14 @@ export const useGameManager = (): GameManager => {
 
   const [toastMessage, setToastMessage] = useState('')
 
-  const startGame = useCallback(() => {
+  const startGame = useCallback((isHardMode = false) => {
     setGameState(prev => ({
       ...prev,
       isGameRunning: true,
       isPaused: false,
       isGameOver: false,
+      level: isHardMode ? 5 : 1,
+      targetScore: calculateLevelRequirement(isHardMode ? 5 : 1),
     }))
   }, [])
 

@@ -5,6 +5,7 @@ import { audioManager } from '../utils/audioManager'
 import { particleSystem } from '../utils/particleSystem'
 import { MinerRenderer, HookRenderer, ItemRenderer, BackgroundRenderer } from './renderers'
 import { useGameState, useGameLogic } from '../hooks'
+import { RatSystem } from '../utils/ratSystem'
 import './GameCanvas.css'
 
 const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: GameProps) => {
@@ -26,6 +27,8 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
     calculateHookSpeed
   } = useGameLogic()
 
+  const ratSystemRef = useRef<RatSystem | null>(null)
+
   const setupCanvas = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -46,9 +49,41 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
     if (itemsRef.current.length === 0) {
       itemsRef.current = generateRandomItems(rect.width, rect.height, gameState.level)
     }
+    
+    if (!ratSystemRef.current) {
+      ratSystemRef.current = new RatSystem(rect.width, rect.height)
+      ratSystemRef.current.setOnDiamondStolen((diamondId) => {
+        // 移除被偷的钻石
+        itemsRef.current = itemsRef.current.filter(item => item.id !== diamondId)
+        
+        // 触发老鼠偷钻石回调
+        onMouseSteal()
+        
+        // 播放偷钻石音效
+        audioManager.play('hit')
+        
+        // 添加红色粒子效果表示损失
+        const canvas = canvasRef.current
+        if (canvas) {
+          const miner = minerRef.current
+          particleSystem.addParticles(
+            miner.x + miner.width / 2,
+            miner.y + miner.height,
+            12,
+            'sparkle',
+            '#FF0000'
+          )
+        }
+      })
+    }
+    
+    // 初始化老鼠系统
+    if (gameState.level >= 5) {
+      ratSystemRef.current.spawnRats(itemsRef.current, gameState.level)
+    }
 
     audioManager.init()
-  }, [gameState.level, initializePositions])
+  }, [gameState.level, initializePositions, onMouseSteal])
 
   const updateGame = useCallback(() => {
     const canvas = canvasRef.current
@@ -59,6 +94,11 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
     const rect = canvas.getBoundingClientRect()
     
     updateHookPhysics(hook, rect.width, rect.height, miner.x, miner.width, miner.y, miner.height)
+    
+    // 更新老鼠系统
+    if (ratSystemRef.current && gameState.level >= 5) {
+      ratSystemRef.current.updateRats(itemsRef.current)
+    }
     
     if (hook.isExtending) {
       hook.length += hook.speed
@@ -255,6 +295,15 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
         const newItems = generateRandomItems(rect.width, rect.height, gameState.level)
         itemsRef.current = newItems
         resetHook() // 重置钩子状态
+        
+        // 初始化老鼠系统
+        if (ratSystemRef.current) {
+          if (gameState.level >= 5) {
+            ratSystemRef.current.spawnRats(newItems, gameState.level)
+          } else {
+            ratSystemRef.current.removeAllRats()
+          }
+        }
       }
     }
   }, [gameState.isGameRunning, gameState.level, resetHook])
@@ -264,6 +313,9 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
     if (gameState.isGameOver || (!gameState.isGameRunning && !gameState.isGameOver)) {
       itemsRef.current = []
       resetHook()
+      if (ratSystemRef.current) {
+        ratSystemRef.current.removeAllRats()
+      }
     }
   }, [gameState.isGameOver, gameState.isGameRunning, resetHook])
 

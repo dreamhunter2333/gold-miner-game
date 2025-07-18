@@ -98,9 +98,14 @@ const GameUI = ({ gameState, onStartGame, onPauseGame, onResetGame }: GameUIProp
               <p>• 物品重量影响收回速度</p>
               <p>• 在时间结束前达到目标分数</p>
             </div>
-            <button className="btn btn-start-large" onClick={onStartGame}>
-              开始游戏
-            </button>
+<div className="start-game-buttons">
+              <button className="btn btn-start-large" onClick={() => onStartGame(false)}>
+                普通模式
+              </button>
+              <button className="btn btn-hard-large" onClick={() => onStartGame(true)}>
+                🔥 困难模式
+              </button>
+            </div>
           </div>
         </div>
       )}
