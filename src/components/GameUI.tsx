@@ -24,6 +24,10 @@ const GameUI = ({ gameState, onStartGame, onPauseGame, onResetGame }: GameUIProp
   return (
     <div className="game-ui">
       <div className="game-header">
+        <div className="version-section">
+          <div className="version">v2.1.0</div>
+        </div>
+        
         <div className="score-section">
           <div className="score">
             <span className="label">分数</span>

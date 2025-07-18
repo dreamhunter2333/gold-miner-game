@@ -16,7 +16,7 @@ export interface DifficultyConfig {
   }
 }
 
-// 指数增长的目标分数计算
+// 线性增长的目标分数计算 - 降低难度
 export const calculateLevelRequirement = (level: number): number => {
   if (level === 1) return 1000
   if (level === 2) return 2000
@@ -24,9 +24,10 @@ export const calculateLevelRequirement = (level: number): number => {
   if (level === 4) return 5500
   if (level === 5) return 8000
   
-  // 第6关及以后：指数增长，公式：base * (1.5^(level-5))
+  // 第6关及以后：温和指数增长，公式：base * (1.25^(level-5))
+  // 比之前的1.5指数增长温和很多，但仍保持递增趋势
   const base = 8000
-  const growthRate = 1.5
+  const growthRate = 1.25 // 每关增长25%，比之前的50%温和很多
   return Math.floor(base * Math.pow(growthRate, level - 5))
 }
 
@@ -40,18 +41,18 @@ export const getDifficultyConfig = (level: number): DifficultyConfig => {
   const targetScore = calculateLevelRequirement(level)
   const timeLimit = calculateTimeLimit()
   
-  // 物品分布：随着关卡增加，主要增加石头和骨头等低价值物品，钻石也会增加
-  const stoneMultiplier = Math.min(1 + (level - 1) * 0.4, 4) // 石头大幅增多
-  const boneMultiplier = Math.min(1 + (level - 1) * 0.3, 3) // 骨头增多
-  const goldMultiplier = Math.max(1 - (level - 1) * 0.1, 0.5) // 金块适度减少
-  const diamondMultiplier = Math.min(1 + (level - 1) * 0.2, 2.5) // 钻石数量也会增加
-  const bagMultiplier = Math.max(1 - (level - 1) * 0.05, 0.6) // 钱袋略微减少
+  // 物品分布：大幅提高钻石数量，减少大石头数量
+  const stoneMultiplier = Math.min(1 + (level - 1) * 0.15, 2) // 进一步降低石头增长，从0.2降到0.15，上限从2.5降到2
+  const boneMultiplier = Math.min(1 + (level - 1) * 0.12, 1.8) // 进一步降低骨头增长，从0.15降到0.12，上限从2降到1.8
+  const goldMultiplier = Math.max(1 - (level - 1) * 0.05, 0.7) // 减少金块减少幅度
+  const diamondMultiplier = Math.min(1 + (level - 1) * 0.6, 6) // 大幅提高钻石数量
+  const bagMultiplier = Math.max(1 - (level - 1) * 0.03, 0.8) // 减少钱袋减少幅度
   
   const itemDistribution = {
     gold: Math.max(Math.floor(4 * goldMultiplier), 2), // 至少2个金块
-    diamond: Math.max(Math.floor(3 * diamondMultiplier), 3), // 至少3个钻石，高等级会更多
-    stone: Math.min(Math.floor(3 * stoneMultiplier), 12), // 最多12个石头
-    bone: Math.min(Math.floor(2 * boneMultiplier), 8), // 最多8个骨头
+    diamond: Math.max(Math.floor(3 * diamondMultiplier), 3 + level * 2), // 从第5关开始大幅增加钻石，无上限
+    stone: Math.min(Math.floor(2 * stoneMultiplier), 6), // 大幅减少石头数量：从3降到2，上限从10降到6
+    bone: Math.min(Math.floor(2 * boneMultiplier), 4), // 减少最大骨头数量：从6降到4
     bag: Math.max(Math.floor(2 * bagMultiplier), 1) // 至少1个钱袋
   }
   

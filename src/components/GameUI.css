@@ -29,6 +29,21 @@
   gap: 15px;
 }
 
+.version-section {
+  display: flex;
+  align-items: center;
+}
+
+.version {
+  font-size: 10px;
+  color: #ccc;
+  font-family: 'Courier New', monospace;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 .sound-toggle {
   width: 36px;
   height: 36px;

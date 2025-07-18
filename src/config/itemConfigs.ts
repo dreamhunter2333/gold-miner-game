@@ -48,9 +48,9 @@ export const ITEM_CONFIGS: Record<GameItem['type'], ItemTypeConfig> = {
   
   stone: {
     sizes: {
-      small: { width: 25, height: 25, value: 20, weight: 3 },  // 从4减少到3
-      medium: { width: 40, height: 40, value: 35, weight: 5 }, // 从7减少到5
-      large: { width: 60, height: 60, value: 50, weight: 7 }   // 从10减少到7
+      small: { width: 25, height: 25, value: 20, weight: 3 },  // 恢复适度重量
+      medium: { width: 40, height: 40, value: 35, weight: 4 }, // 恢复适度重量
+      large: { width: 60, height: 60, value: 50, weight: 5 }   // 恢复适度重量
     },
     rarity: 0.4,
     colors: {
@@ -149,8 +149,8 @@ export const calculateSpawnProbability = (
       // Gold stays relatively consistent
       return baseRarity
     case 'stone':
-      // Stones become more common at higher levels (increased difficulty)
-      return Math.min(baseRarity + (level - 1) * 0.03, 0.6)
+      // Stones become less common at higher levels (reduced difficulty)
+      return Math.min(baseRarity + (level - 1) * 0.015, 0.4) // 从0.03降到0.015，上限从0.6降到0.4
     case 'bone':
       // Bones remain rare but consistent
       return baseRarity
