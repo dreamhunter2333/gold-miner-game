@@ -52,7 +52,7 @@ export interface GameProps {
   gameState: GameState
   onUpdateScore: (points: number) => void
   onNextLevel: () => void
-  onMouseSteal: () => void // 老鼠偷钻石的回调
+  onMouseSteal: (diamondValue: number) => void // 老鼠偷钻石的回调
 }
 
 export interface GameUIProps {

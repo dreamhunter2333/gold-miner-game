@@ -11,14 +11,13 @@ export const generateRandomItems = (canvasWidth: number, canvasHeight: number, l
   const itemPool = generateItemPool(level)
   const difficultyConfig = getDifficultyConfig(level)
   
-  // 计算总物品数量
+  // 计算总物品数量 - 排除老鼠，老鼠由RatSystem单独管理
   const totalItemCount = difficultyConfig.itemDistribution.gold + 
                         difficultyConfig.itemDistribution.diamond + 
                         difficultyConfig.itemDistribution.stone + 
                         difficultyConfig.itemDistribution.bone + 
                         difficultyConfig.itemDistribution.bag +
-                        Math.floor(level >= 3 ? (level - 2) * 2 : 0) + // TNT数量
-                        Math.floor(level >= 5 ? Math.min(level - 4, 5) : 0)   // 老鼠数量，最多5只
+                        Math.floor(level >= 3 ? (level - 2) * 2 : 0) // TNT数量
   
   const sizeDistribution = generateSizeDistribution(difficultyConfig.sizeDistribution)
   

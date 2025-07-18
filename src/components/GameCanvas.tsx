@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react'
 import type { GameProps } from '../types/game'
 import { generateRandomItems } from '../utils/itemGenerator'
+import { calculateTimeLimit } from '../utils/difficultySystem'
 import { audioManager } from '../utils/audioManager'
 import { particleSystem } from '../utils/particleSystem'
 import { MinerRenderer, HookRenderer, ItemRenderer, BackgroundRenderer } from './renderers'
@@ -52,12 +53,9 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
     
     if (!ratSystemRef.current) {
       ratSystemRef.current = new RatSystem(rect.width, rect.height)
-      ratSystemRef.current.setOnDiamondStolen((diamondId) => {
-        // 移除被偷的钻石
-        itemsRef.current = itemsRef.current.filter(item => item.id !== diamondId)
-        
-        // 触发老鼠偷钻石回调
-        onMouseSteal()
+      ratSystemRef.current.setOnDiamondStolen((diamondValue: number) => {
+        // 触发老鼠偷钻石回调，传入实际钻石价值
+        onMouseSteal(diamondValue)
         
         // 播放偷钻石音效
         audioManager.play('hit')
@@ -77,9 +75,11 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
       })
     }
     
-    // 初始化老鼠系统
+    // 初始化老鼠系统，传入已游戏时间（总时间-剩余时间）
     if (gameState.level >= 5) {
-      ratSystemRef.current.spawnRats(itemsRef.current, gameState.level)
+      const totalTime = calculateTimeLimit(gameState.level)
+      const timeElapsed = totalTime - gameState.timeRemaining
+      ratSystemRef.current.spawnRats(itemsRef.current, gameState.level, timeElapsed)
     }
 
     audioManager.init()
@@ -95,9 +95,14 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
     
     updateHookPhysics(hook, rect.width, rect.height, miner.x, miner.width, miner.y, miner.height)
     
-    // 更新老鼠系统
-    if (ratSystemRef.current && gameState.level >= 5) {
-      ratSystemRef.current.updateRats(itemsRef.current)
+    // 更新老鼠系统 - 使用真实的倒计时值
+    if (ratSystemRef.current && gameState.level >= 5 && gameState.isGameRunning) {
+      const totalTime = calculateTimeLimit(gameState.level)
+      const timeElapsed = totalTime - gameState.timeRemaining
+      if (timeElapsed >= 30) {
+        ratSystemRef.current.spawnRats(itemsRef.current, gameState.level, timeElapsed)
+        ratSystemRef.current.updateRats(itemsRef.current)
+      }
     }
     
     if (hook.isExtending) {
@@ -118,6 +123,31 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
       // 检查物品碰撞
       itemsRef.current.forEach(item => {
         if (checkCollision(hook, item) && !hook.attachedItem) {
+          // TNT炸药碰到直接爆炸，不可抓取
+          if (item.type === 'tnt') {
+            // 播放爆炸音效
+            audioManager.play('hit')
+            
+            // 添加爆炸粒子效果
+            particleSystem.addParticles(
+              item.x + item.width / 2,
+              item.y + item.height / 2,
+              12,
+              'explosion',
+              '#FF4500'
+            )
+            
+            // 移除TNT
+            itemsRef.current = itemsRef.current.filter(i => i.id !== item.id)
+            
+            // 直接收回钩子
+            hook.isExtending = false
+            hook.isRetracting = true
+            
+            return
+          }
+          
+          // 正常物品可以抓取
           hook.attachedItem = item
           hook.isExtending = false
           hook.isRetracting = true
@@ -162,17 +192,12 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
           
           // 处理老鼠的特殊逻辑
           if (item.type === 'mouse') {
-            onMouseSteal() // 触发老鼠偷钻石逻辑
+            // 直接使用老鼠当前的价值（已由ratSystem更新）
+            onUpdateScore(item.value)
             
-            // 老鼠特殊音效和粒子效果
-            audioManager.play('hit') // 可以后续添加专门的老鼠音效
-            particleSystem.addParticles(
-              miner.x + miner.width / 2,
-              miner.y + miner.height,
-              12,
-              'sparkle',
-              '#FF0000' // 红色粒子表示损失
-            )
+            // 播放成功音效
+            audioManager.play('collect')
+            
           } else {
             // 正常物品的分数处理
             onUpdateScore(item.value)
@@ -209,7 +234,7 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
       hook.attachedItem.x = hookX - hook.attachedItem.width / 2
       hook.attachedItem.y = hookY - hook.attachedItem.height / 2
     }
-  }, [gameState.isGameRunning, gameState.isPaused, onUpdateScore, onNextLevel, onMouseSteal, updateHookPhysics, checkCollision, calculateHookSpeed, resetHook])
+  }, [gameState.isGameRunning, gameState.isPaused, gameState.timeRemaining, gameState.level, onUpdateScore, onNextLevel, onMouseSteal, updateHookPhysics, checkCollision, calculateHookSpeed, resetHook])
 
   const render = useCallback(() => {
     const canvas = canvasRef.current
@@ -296,17 +321,20 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
         itemsRef.current = newItems
         resetHook() // 重置钩子状态
         
-        // 初始化老鼠系统
+        // 初始化老鼠系统，传入已游戏时间（总时间-剩余时间）
         if (ratSystemRef.current) {
           if (gameState.level >= 5) {
-            ratSystemRef.current.spawnRats(newItems, gameState.level)
+            const totalTime = calculateTimeLimit(gameState.level)
+            const timeElapsed = totalTime - gameState.timeRemaining
+            ratSystemRef.current.spawnRats(newItems, gameState.level, timeElapsed)
           } else {
             ratSystemRef.current.removeAllRats()
           }
         }
       }
     }
-  }, [gameState.isGameRunning, gameState.level, resetHook])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState.isGameRunning, gameState.level, resetHook, itemsRef])
 
   // 清空物品当游戏结束时
   useEffect(() => {
@@ -317,7 +345,7 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
         ratSystemRef.current.removeAllRats()
       }
     }
-  }, [gameState.isGameOver, gameState.isGameRunning, resetHook])
+  }, [gameState.isGameOver, gameState.isGameRunning, resetHook, itemsRef])
 
   useEffect(() => {
     if (gameState.isGameRunning && !gameState.isPaused) {
@@ -329,7 +357,7 @@ const GameCanvas = ({ gameState, onUpdateScore, onNextLevel, onMouseSteal }: Gam
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [gameState.isGameRunning, gameState.isPaused, render])
+  }, [gameState.isGameRunning, gameState.isPaused, gameState.timeRemaining, gameState.level, render])
 
   return (
     <div className="game-canvas-container">

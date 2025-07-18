@@ -9,7 +9,7 @@ class AudioManager {
 
   private initAudioContext() {
     try {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+      this.audioContext = new (window.AudioContext || (window as {webkitAudioContext?: typeof AudioContext}).webkitAudioContext)()
     } catch (error) {
       console.warn('Web Audio API not supported:', error)
     }

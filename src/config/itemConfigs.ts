@@ -172,7 +172,8 @@ export const calculateSpawnProbability = (
  * Generate weighted item pool for a given level
  */
 export const generateItemPool = (level: number): Array<{ type: GameItem['type']; weight: number }> => {
-  const itemTypes: GameItem['type'][] = ['gold', 'diamond', 'stone', 'bone', 'bag', 'tnt', 'mouse']
+  // 排除老鼠类型，老鼠由RatSystem单独管理
+  const itemTypes: GameItem['type'][] = ['gold', 'diamond', 'stone', 'bone', 'bag', 'tnt']
   
   return itemTypes.map(type => ({
     type,
